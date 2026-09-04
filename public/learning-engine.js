@@ -17,9 +17,11 @@ const MISSIONS = [
 
 export function createInitialState() {
   return {
-    xp: 340,
-    streak: 4,
-    sessions: 3,
+    xp: 0,
+    streak: 0,
+    sessions: 0,
+    lastPracticeDay: null,
+    lastDifficulty: 'balanced',
     completed: [],
     mood: 'focado',
     profile: { level: 'intermediario', goal: 'som', minutes: 25, blocker: 'afinação' },
@@ -30,13 +32,48 @@ export function createInitialState() {
 export function sanitizeState(candidate) {
   const initial = createInitialState();
   if (!candidate || typeof candidate !== 'object') return initial;
+  const profile = candidate.profile || {};
+  const choice = (value, choices, fallback) => choices.includes(value) ? value : fallback;
+  const count = (value) => Number.isSafeInteger(value) && value >= 0 ? value : 0;
   return {
     ...initial,
-    ...candidate,
-    completed: Array.isArray(candidate.completed) ? candidate.completed : [],
-    profile: { ...initial.profile, ...(candidate.profile || {}) },
-    signals: { ...initial.signals, ...(candidate.signals || {}) },
+    xp: count(candidate.xp), sessions: count(candidate.sessions), streak: count(candidate.streak),
+    lastPracticeDay: /^\d{4}-\d{2}-\d{2}$/.test(candidate.lastPracticeDay) ? candidate.lastPracticeDay : null,
+    lastDifficulty: choice(candidate.lastDifficulty, ['easy', 'balanced', 'hard'], 'balanced'),
+    mood: choice(candidate.mood, ['focado', 'tenso', 'energico'], initial.mood),
+    completed: Array.isArray(candidate.completed) ? [...new Set(candidate.completed.filter((id) => MISSIONS.some((mission) => mission.id === id)))] : [],
+    profile: {
+      level: choice(profile.level, ['iniciante', 'intermediario', 'avancado'], initial.profile.level),
+      goal: choice(profile.goal, ['som', 'tecnica', 'repertorio', 'performance'], initial.profile.goal),
+      minutes: choice(profile.minutes, [15, 25, 40, 60], initial.profile.minutes),
+      blocker: choice(profile.blocker, ['afinação', 'arco', 'tensão', 'constância'], initial.profile.blocker),
+    },
+    signals: Object.fromEntries(Object.keys(initial.signals).map((key) => [key, count(candidate.signals?.[key])])),
   };
+}
+
+/** @param {Date} date @returns {string} */
+function practiceDay(date) {
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+}
+
+/** @param {ReturnType<typeof createInitialState>} state @param {Date} [now] @returns {number} */
+export function currentStreak(state, now = new Date()) {
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  return [practiceDay(now), practiceDay(yesterday)].includes(state.lastPracticeDay) ? state.streak : 0;
+}
+
+/** @param {ReturnType<typeof createInitialState>} state @param {Date} now */
+function markPractice(state, now) {
+  const day = practiceDay(now);
+  if (state.lastPracticeDay === day) return state;
+  return { ...state, streak: currentStreak(state, now) + 1, lastPracticeDay: day };
+}
+
+/** @param {ReturnType<typeof createInitialState>} state @param {Date} [now] */
+export function completeSession(state, now = new Date()) {
+  return markPractice({ ...state, sessions: state.sessions + 1 }, now);
 }
 
 export function getRank(xp) {
@@ -62,24 +99,24 @@ export function getVisibleMissions(state) {
   return available.sort((a, b) => missionPriority(a, state.profile.blocker) - missionPriority(b, state.profile.blocker)).slice(0, 3);
 }
 
-export function completeMission(state, missionId) {
+export function completeMission(state, missionId, now = new Date()) {
   if (state.completed.includes(missionId)) return state;
   const mission = MISSIONS.find((item) => item.id === missionId);
   if (!mission) return state;
-  return { ...state, xp: state.xp + mission.xp, sessions: state.sessions + 1, completed: [...state.completed, missionId] };
+  return markPractice({ ...state, xp: state.xp + mission.xp, completed: [...state.completed, missionId] }, now);
 }
 
 export function buildSession(state) {
   const total = Number(state.profile.minutes) || 25;
-  const recovery = state.mood === 'tenso' ? 0.3 : 0.18;
+  const recovery = state.mood === 'tenso' || state.lastDifficulty === 'hard' ? 0.3 : 0.18;
   const technique = state.profile.goal === 'tecnica' ? 0.38 : 0.3;
   const warmup = Math.max(3, Math.round(total * recovery));
-  const core = Math.max(5, Math.round(total * technique));
-  const ear = Math.max(4, Math.round(total * 0.2));
-  const repertoire = Math.max(4, total - warmup - core - ear);
+  const core = Math.max(3, Math.round(total * technique));
+  const ear = Math.max(2, Math.round(total * 0.2));
+  const repertoire = total - warmup - core - ear;
   return [
     { label: 'Preparar o corpo', detail: 'Respiração, apoios e arco sem pressão', minutes: warmup },
-    { label: 'Núcleo técnico', detail: focusDetail(state.profile.blocker), minutes: core },
+    { label: 'Núcleo técnico', detail: `${focusDetail(state.profile.blocker)}${state.lastDifficulty === 'hard' ? '. Reduza o andamento e faça pausas' : ''}`, minutes: core },
     { label: 'Ouvir antes de tocar', detail: 'Nota-alvo, antecipação e ajuste fino', minutes: ear },
     { label: 'Levar à música', detail: 'Trecho de repertório com uma intenção', minutes: repertoire },
   ];
@@ -96,8 +133,8 @@ function focusDetail(blocker) {
 }
 
 export function recordDifficulty(state, difficulty) {
-  if (!(difficulty in state.signals)) return state;
-  return { ...state, signals: { ...state.signals, [difficulty]: state.signals[difficulty] + 1 } };
+  if (!Object.hasOwn(state.signals, difficulty)) return state;
+  return { ...state, lastDifficulty: difficulty, signals: { ...state.signals, [difficulty]: state.signals[difficulty] + 1 } };
 }
 
 export function mentorReply(message, state) {
@@ -108,5 +145,5 @@ export function mentorReply(message, state) {
   if (/arco|som|ruído|chiado/.test(text)) return 'Isole uma corda. Faça quatro arcos lentos observando três variáveis: ponto de contato, velocidade e peso. Mude apenas uma variável por tentativa.';
   if (/const|tempo|rotina|desanim/.test(text)) return 'Reduza a meta até ela caber no pior dia. Hoje, complete só o aquecimento e uma missão. Consistência nasce de sessões que terminam bem.';
   if (/vibrato|posição|mudança/.test(text)) return 'Separe o gesto da música: pratique o movimento em silêncio, depois com uma nota longa e só então dentro da frase. Grave a terceira tentativa.';
-  return `Seu foco atual é ${state.profile.blocker}. Comece devagar, escolha um critério de sucesso e registre uma tentativa. O plano de ${minutes} minutos já foi recalibrado para isso.`;
+  return `Seu foco atual é ${state.profile.blocker}. Comece devagar, escolha um critério de sucesso e registre uma tentativa. Seu plano de ${minutes} minutos está disponível na sala de prática.`;
 }
