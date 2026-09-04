@@ -1,7 +1,9 @@
 import {
   buildSession,
   completeMission,
+  completeSession,
   createInitialState,
+  currentStreak,
   getRank,
   getRankProgress,
   getVisibleMissions,
@@ -10,7 +12,7 @@ import {
   sanitizeState,
 } from './learning-engine.js';
 
-const STORAGE_KEY = 'elton-cello-lab:progress:v1';
+const STORAGE_KEY = 'elton-cello-lab:progress:v2';
 const STRING_FREQUENCIES = { C2: 65.41, G2: 98, D3: 146.83, A3: 220 };
 const select = (query, root = document) => root.querySelector(query);
 const selectAll = (query, root = document) => [...root.querySelectorAll(query)];
@@ -20,21 +22,29 @@ let remainingSeconds = 0;
 
 function loadState() {
   try {
-    return sanitizeState(JSON.parse(localStorage.getItem(STORAGE_KEY)));
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return sanitizeState(JSON.parse(saved));
+    const legacy = sanitizeState(JSON.parse(localStorage.getItem('elton-cello-lab:progress:v1')));
+    // O primeiro protótipo somava 340 XP e contadores fictícios ao progresso real.
+    return { ...legacy, xp: Math.max(0, legacy.xp - 340), sessions: 0, streak: 0 };
   } catch {
     return createInitialState();
   }
 }
 
 function persistState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    select('[data-storage-status]').textContent = 'Armazenamento indisponível. O progresso desta sessão será perdido ao fechar a página.';
+  }
 }
 
 function renderStats() {
   const rank = getRank(state.xp);
   const progress = getRankProgress(state.xp);
   select('[data-stat="xp"]').textContent = state.xp.toLocaleString('pt-BR');
-  select('[data-stat="streak"]').textContent = `${state.streak} dias`;
+  select('[data-stat="streak"]').textContent = `${currentStreak(state)} dias`;
   select('[data-stat="sessions"]').textContent = state.sessions;
   select('[data-stat="rank"]').textContent = rank.name;
   select('[data-rank-progress]').style.width = `${progress.percent}%`;
@@ -67,7 +77,7 @@ function renderMissions() {
 }
 
 function renderAllComplete(container) {
-  container.innerHTML = `<article class="all-complete"><span>BRAVO</span><h3>Ciclo concluído.</h3><p>Você finalizou as missões disponíveis. O próximo ciclo será liberado após a revisão do mentor.</p></article>`;
+  container.innerHTML = `<article class="all-complete"><span>BRAVO</span><h3>Ciclo concluído.</h3><p>Você finalizou as seis missões deste protótipo. Continue praticando com o plano e leve suas gravações ao professor.</p></article>`;
 }
 
 function renderProfile() {
@@ -99,6 +109,7 @@ function chooseMood(mood) {
   state = { ...state, mood };
   persistState();
   renderProfile();
+  pauseAndResetTimer();
   renderSession();
   showToast('Sessão recalibrada para o seu momento.');
 }
@@ -110,6 +121,7 @@ function applyDiagnostic(form) {
     profile: { level: values.level, goal: values.goal, minutes: Number(values.minutes), blocker: values.blocker },
   };
   persistState();
+  pauseAndResetTimer();
   render();
   select('#diagnosticDialog').close();
   showToast('Novo plano criado para você.');
@@ -129,6 +141,7 @@ function updateTimerText() {
 
 function toggleTimer(button) {
   if (timerId) return stopTimer(button);
+  if (remainingSeconds <= 0) resetTimer();
   button.textContent = 'Pausar sessão';
   timerId = setInterval(() => tickTimer(button), 1000);
 }
@@ -145,17 +158,29 @@ function tickTimer(button) {
   if (remainingSeconds > 0) return;
   stopTimer(button);
   button.textContent = 'Sessão concluída';
+  state = completeSession(state);
+  persistState();
+  renderStats();
   showToast('Sessão concluída. Registre como ela foi.');
 }
 
 function registerDifficulty(difficulty) {
   state = recordDifficulty(state, difficulty);
   persistState();
-  showToast('Sinal registrado. O próximo plano vai aprender com isso.');
+  pauseAndResetTimer();
+  renderSession();
+  showToast('Sinal registrado. Seu plano foi ajustado.');
+}
+
+function pauseAndResetTimer() {
+  stopTimer(select('[data-start-timer]'));
+  select('[data-start-timer]').textContent = 'Iniciar sessão';
+  resetTimer();
 }
 
 function playString(note, button) {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return showToast('Áudio não disponível neste navegador.');
   const context = new AudioContext();
   const oscillator = context.createOscillator();
   const gain = context.createGain();
@@ -167,6 +192,7 @@ function playString(note, button) {
   oscillator.connect(gain).connect(context.destination);
   oscillator.start();
   oscillator.stop(context.currentTime + 1.55);
+  oscillator.onended = () => { void context.close(); };
   button.classList.add('sounding');
   setTimeout(() => button.classList.remove('sounding'), 400);
 }
@@ -209,7 +235,7 @@ function celebrate(origin) {
 }
 
 function bindEvents() {
-  selectAll('[data-open-diagnostic]').forEach((button) => button.addEventListener('click', () => select('#diagnosticDialog').showModal()));
+  selectAll('[data-open-diagnostic]').forEach((button) => button.addEventListener('click', openDiagnostic));
   select('[data-close-dialog]').addEventListener('click', () => select('#diagnosticDialog').close());
   select('#diagnosticForm').addEventListener('submit', (event) => { event.preventDefault(); applyDiagnostic(event.currentTarget); });
   select('[data-missions]').addEventListener('click', (event) => { const button = event.target.closest('[data-complete]'); if (button) finishMission(button.dataset.complete, button); });
@@ -220,6 +246,12 @@ function bindEvents() {
   select('#chatForm').addEventListener('submit', (event) => { event.preventDefault(); submitChat(event.currentTarget); });
   selectAll('[data-chat-prompt]').forEach((button) => button.addEventListener('click', () => { select('#chatInput').value = button.textContent; select('#chatInput').focus(); }));
   select('[data-menu]').addEventListener('click', () => select('[data-nav]').classList.toggle('open'));
+}
+
+function openDiagnostic() {
+  const form = select('#diagnosticForm');
+  Object.entries(state.profile).forEach(([key, value]) => { form.elements.namedItem(key).value = value; });
+  select('#diagnosticDialog').showModal();
 }
 
 document.documentElement.classList.add('js');
