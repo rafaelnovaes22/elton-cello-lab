@@ -1,0 +1,78 @@
+@media (max-width: 1050px) {
+  .topbar nav { gap: 16px; }
+  .topbar nav a { display: none; }
+  .hero { grid-template-columns: 53% 47%; padding-left: 5vw; }
+  .hero-portrait { height: 650px; }
+  .dashboard-shell { grid-template-columns: 1fr; }
+  .dashboard-rail { display: none; }
+  .method-section { grid-template-columns: 1fr; }
+  .method-image { min-height: 530px; border-right: 0; }
+  .journey-layout { gap: 35px; }
+  .mentor-section { gap: 5vw; }
+  .mentorship-section { grid-template-columns: 1fr 1fr; }
+  .mentorship-section > a { grid-column: 2; }
+}
+
+@media (max-width: 760px) {
+  .topbar { height: 72px; padding: 0 20px; }
+  .brand img { width: 165px; }
+  .topbar .menu-button { display: block; }
+  .topbar nav { display: none; position: absolute; top: 72px; left: 0; right: 0; padding: 20px; background: #0b0a09f5; border-bottom: 1px solid var(--line-dark); flex-direction: column; align-items: stretch; }
+  .topbar nav.open { display: flex; }
+  .topbar nav a { display: block; padding: 8px 0; }
+  .hero { min-height: 940px; display: block; padding: 125px 22px 0; }
+  .hero h1 { font-size: clamp(49px, 15vw, 70px); }
+  .hero-lead { font-size: 13px; }
+  .hero-actions { align-items: flex-start; flex-direction: column; gap: 22px; margin: 30px 0; }
+  .hero-proof { display: none; }
+  .hero-portrait { position: absolute; height: 440px; bottom: 0; left: 0; right: 0; }
+  .hero-portrait > img { height: 108%; bottom: -55px; transform: translateX(-48%); }
+  .portrait-halo { width: 350px; height: 350px; }
+  .portrait-word { font-size: 26vw; }
+  .hero-portrait figcaption { right: 18px; bottom: 18px; }
+  .floating-note { display: none; }
+  .hero-index { display: none; }
+  .principles-strip { gap: 18px; overflow: hidden; justify-content: flex-start; white-space: nowrap; }
+  .practice-section, .journey-section { padding: 75px 16px; }
+  .section-heading { display: block; margin-bottom: 35px; }
+  .section-heading h2 { font-size: 49px; }
+  .section-heading > p { margin-top: 24px; }
+  .dashboard-main { padding: 18px 12px; }
+  .dashboard-header { align-items: flex-start; gap: 12px; }
+  .dashboard-header h3 { font-size: 24px; }
+  .outline-button { padding: 10px; white-space: nowrap; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .checkin-row { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .checkin-row div { width: 100%; }
+  .checkin-row button { flex: 1; }
+  .practice-grid, .mission-grid { grid-template-columns: 1fr; }
+  .string-lab { min-height: 340px; }
+  .missions-heading { align-items: flex-start; flex-direction: column; gap: 9px; }
+  .method-image { min-height: 430px; }
+  .method-image img { object-position: 64% center; }
+  .method-content { padding: 72px 18px; }
+  .pillar-grid { grid-template-columns: 1fr; }
+  .pillar-grid article { min-height: 150px; }
+  .journey-layout { grid-template-columns: 1fr; }
+  .journey-map article { grid-template-columns: 45px 1fr; padding: 18px 0; }
+  .journey-map article > b { grid-column: 2; }
+  .course-stack { margin-top: 20px; }
+  .mentor-section { padding: 75px 16px; grid-template-columns: 1fr; gap: 45px; }
+  .mentor-copy h2 { font-size: 50px; }
+  .chat-shell { min-height: 520px; }
+  .quick-prompts { padding-bottom: 12px; }
+  .mentorship-section { padding: 65px 20px; grid-template-columns: 1fr; gap: 25px; }
+  .mentorship-section > a { grid-column: auto; justify-content: space-between; }
+  footer { padding: 38px 20px; grid-template-columns: 1fr; gap: 24px; }
+  footer p { text-align: left; }
+  footer > div:last-child { flex-wrap: wrap; }
+  .footer-brand img { width: 180px; }
+  .form-grid { grid-template-columns: 1fr; }
+  dialog form { padding: 25px 20px; }
+  dialog header h2 { font-size: 31px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

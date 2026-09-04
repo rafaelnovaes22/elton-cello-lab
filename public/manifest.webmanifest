@@ -1,0 +1,16 @@
+{
+  "name": "Elton Cello Lab",
+  "short_name": "Cello Lab",
+  "description": "Jornada adaptativa de evolução no violoncelo.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090908",
+  "theme_color": "#090908",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
