@@ -1,7 +1,7 @@
 ﻿name: pages
 on:
   push:
-    branches: [main]
+    branches: [codex/elton-cello-lab]
   workflow_dispatch:
 permissions:
   contents: read
