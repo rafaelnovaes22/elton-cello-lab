@@ -2,3 +2,5 @@ node_modules/
 .railway/
 .DS_Store
 npm-debug.log*
+.vercel
+.env*

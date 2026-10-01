@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#090908" />
+    <meta name="description" content="Catálogo oficial dos cursos Celloflix de Elton Araújo: do primeiro arco ao repertório, escolha o próximo passo no violoncelo." />
+    <meta property="og:title" content="Catálogo de cursos | Elton Cello Lab" />
+    <meta property="og:description" content="Oito cursos Celloflix organizados por nível: base, técnica e repertório." />
+    <meta property="og:image" content="/elton-stage.webp" />
+    <title>Catálogo de cursos | Elton Cello Lab</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/responsive.css" />
+    <style>
+      .catalog-hero { position: relative; overflow: hidden; padding: 150px 7vw 60px; background: radial-gradient(circle at 78% 40%, #40301c 0, #17130d 28%, transparent 58%), linear-gradient(110deg, #090908 30%, #11100d 100%); }
+      .catalog-hero::before { content: ''; position: absolute; inset: 0; opacity: 0.14; background-image: repeating-linear-gradient(90deg, transparent 0, transparent calc(12.5% - 1px), #fff 12.5%); pointer-events: none; }
+      .catalog-hero > div { position: relative; z-index: 2; max-width: 860px; }
+      .catalog-hero h1 { font-family: var(--display); font-weight: 400; font-size: clamp(46px, 5.4vw, 84px); letter-spacing: -0.05em; line-height: 0.98; margin: 26px 0 20px; }
+      .catalog-hero h1 em { color: var(--gold); }
+      .catalog-hero p.lead { color: #aaa59c; line-height: 1.75; font-size: 15px; max-width: 620px; }
+      .catalog-hero .hero-actions { display: flex; align-items: center; gap: 28px; margin: 34px 0 0; flex-wrap: wrap; }
+      .catalog-section { background: var(--paper); color: var(--ink); padding: 90px 5vw 100px; }
+      .catalog-section .section-heading { max-width: 1320px; }
+      .catalog-grid { max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .course-card { background: #fff; border: 1px solid #e0dbd0; padding: 26px; display: flex; flex-direction: column; gap: 12px; }
+      .course-card.featured { grid-column: 1 / -1; border-color: var(--gold); box-shadow: 0 18px 50px #4b3c2022; background: linear-gradient(180deg, #fffdf6, #fff); }
+      .course-top { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: 0.14em; color: #8b826f; text-transform: uppercase; }
+      .course-top b { color: #725e2d; font-family: var(--display); font-size: 26px; font-weight: 400; letter-spacing: 0; }
+      .course-tag { display: inline-block; font-size: 8px; letter-spacing: 0.14em; color: #544825; border: 1px solid #b5a87f; padding: 6px 10px; text-transform: uppercase; }
+      .course-card h3 { font-family: var(--display); font-size: 30px; font-weight: 400; line-height: 1.05; }
+      .course-card p { color: #716c63; font-size: 13px; line-height: 1.7; }
+      .course-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+      .course-meta span { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8379; background: #f1ece0; border: 1px solid #e0d9c8; padding: 6px 10px; }
+      .course-card > a { margin-top: auto; border-top: 1px solid #e4dfd6; padding-top: 16px; display: flex; justify-content: space-between; align-items: center; font-family: var(--display); font-size: 18px; }
+      .course-card > a small { display: block; font-family: var(--sans); color: #837c72; font-size: 8px; letter-spacing: 0.13em; margin-bottom: 4px; }
+      .course-card > a b { color: var(--gold); font-weight: 400; }
+      .choose-section { background: var(--ink-soft); padding: 90px 5vw; }
+      .choose-grid { max-width: 1320px; margin: 40px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line-dark); border-left: 1px solid var(--line-dark); }
+      .choose-grid article { padding: 28px; border-right: 1px solid var(--line-dark); border-bottom: 1px solid var(--line-dark); }
+      .choose-grid b { color: var(--gold); font-family: var(--display); font-weight: 400; font-size: 26px; }
+      .choose-grid h3 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 16px 0 8px; }
+      .choose-grid p { color: #8e8980; font-size: 12px; line-height: 1.7; }
+      .choose-grid a { color: var(--gold-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+      .topbar nav a.active { color: #fff; border-bottom: 1px solid var(--gold); padding-bottom: 4px; }
+      @media (max-width: 760px) {
+        .catalog-hero { padding: 120px 22px 44px; }
+        .catalog-section { padding: 60px 16px; }
+        .catalog-grid { grid-template-columns: 1fr; }
+        .choose-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Elton Cello Lab, início">
+        <img src="/elton-logo.webp" alt="Elton Cello Fine" />
+        <span>LAB</span>
+      </a>
+      <button class="menu-button" data-menu aria-label="Abrir menu">Menu</button>
+      <nav data-nav aria-label="Navegação principal">
+        <a href="/#plano">Meu plano</a>
+        <a href="/#metodo">Método</a>
+        <a href="/#jornada">Jornada</a>
+        <a href="/cursos.html" class="active" aria-current="page">Cursos</a>
+        <a class="nav-cta" href="/#plano">Montar meu treino</a>
+      </nav>
+    </header>
+
+    <main id="conteudo">
+      <section class="catalog-hero">
+        <div>
+          <p class="eyebrow"><span></span> Catálogo oficial Celloflix</p>
+          <h1>Um curso para cada fase <em>do seu som.</em></h1>
+          <p class="lead">Página complementar ao Practice Lab: aqui você encontra os oito cursos de Elton Araújo organizados por nível, do primeiro contato ao repertório avançado. A compra e as aulas acontecem no Celloflix, o treino diário continua no Lab.</p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#catalogo">Ver os 8 cursos <span>↓</span></a>
+            <a class="text-link" href="https://wa.me/5511914799736?text=Ol%C3%A1%2C%20quero%20conhecer%20a%20mentoria%20Elton%20Ara%C3%BAjo" target="_blank" rel="noreferrer">Falar com a mentoria <span>↗</span></a>
+          </div>
+        </div>
+      </section>
+
+      <div class="principles-strip" aria-label="Organização do catálogo">
+        <span>Base sólida</span><i>◆</i><span>Técnica consciente</span><i>◆</i><span>Repertório com expressão</span><i>◆</i><span>Estudo no seu ritmo</span>
+      </div>
+
+      <section class="catalog-section" id="catalogo">
+        <div class="section-heading">
+          <div><p class="eyebrow dark"><span></span> Os 8 cursos</p><h2>Comece pelo seu<br />momento atual.</h2></div>
+          <p>Ordem sugerida de jornada: base primeiro, técnica no meio, repertório como aplicação. Todos os botões levam ao Celloflix em nova aba, com garantia de 7 dias informada na página de cada curso.</p>
+        </div>
+
+        <div class="catalog-grid">
+          <article class="course-card featured">
+            <div class="course-top"><span class="course-tag">Jornada completa</span><b>01</b></div>
+            <h3>CelloClass: do zero ao repertório</h3>
+            <p>O passo a passo em 7 módulos, do plano de estudos e escolha do instrumento à postura sem dor, digitação, posições até o capotasto, vibrato e obras como Suíte de Bach e O Cisne. Para quem não sabe por onde começar.</p>
+            <div class="course-meta"><span>Iniciante ao intermediário</span><span>7 módulos</span><span>Aulas gravadas</span></div>
+            <a href="https://celloflix.com/celloclass" target="_blank" rel="noreferrer"><span><small>Ver jornada completa</small>CelloClass</span><b>↗</b></a>
+          </article>
+
+          <article class="course-card">
+            <div class="course-top"><span class="course-tag">Começar</span><b>02</b></div>
+            <h3>Curso Básico de Violoncelo</h3>
+            <p>Postura correta, leitura de partituras, arco e dedilhado, percepção auditiva e rotina de estudo. Base sólida para sair do zero com segurança.</p>
+            <div class="course-meta"><span>Iniciante</span><span>3 módulos</span></div>
+            <a href="https://celloflix.com/cursobasico" target="_blank" rel="noreferrer"><span><small>Começar</small>Curso Básico</span><b>↗</b></a>
+          </article>
+
+          <article class="course-card">
+            <div class="course-top"><span class="course-tag">Aperfeiçoar</span><b>03</b></div>
+            <h3>Técnica de Arco: controle e expressão</h3>
+            <p>Domínio dos 7 aspectos do arco, peso, velocidade e distribuição, com o método Feuillard e a lição 33 em 16 aulas. Som limpo e articulação refinada.</p>
+            <div class="course-meta"><span>Intermediário</span><span>16 aulas</span></div>
+            <a href="https://celloflix.com/tecnicadearco" target="_blank" rel="noreferrer"><span><small>Aperfeiçoar</small>Técnica de Arco</span><b>↗</b></a>
+          </article>
+
+          <article class="course-card">
+            <div class="course-top"><span class="course-tag">Fluência</span><b>04</b></div>
+            <h3>Mudança de Posição sem travar</h3>
+            <p>Da 1a a 7a posição com mudanças suaves, coordenação entre arco e mão esquerda e aplicação direta em repertório e estudos progressivos.</p>
+            <div class="course-meta"><span>Intermediário</span><span>Posições 1 a 7</span></div>
+            <a href="https://celloflix.com/mudancadeposicao" target="_blank" rel="noreferrer"><span><small>Destravar</small>Mudança de Posição</span><b>↗</b></a>
+          </article>
+
+          <article class="course-card">
+            <div class="course-top"><span class="course-tag">Expressão</span><b>05</b></div>
+            <h3>Vibrato com leveza e personalidade</h3>
+            <p>Do mecanismo à execução, com exercícios para 3o e 4o dedos, amplitude e velocidade variadas. Para quem nunca fez ou quer refinar o vibrato.</p>
+            <div class="course-meta"><span>Intermediário</span><span>Exercícios guiados</span></div>
+            <a href="https://celloflix.com/vibrato" target="_blank" rel="noreferrer"><span><small>Dar voz</small>Vibrato</span><b>↗</b></a>
+          </article>
+
+          <article class="course-card">
+            <div class="course-top"><span class="course-tag">Aprofundar</span><b>06</b></div>
+            <h3>Método Dotzauer, volume 1</h3>
+            <p>Base técnica do método clássico: postura, arco, dedilhado, afinação, ritmo e leitura das partituras do Dotzauer Tutor. Ideal para estudo estruturado.</p>
+            <div class="course-meta"><span>Todos os níveis</span><span>Método clássico</span></div>
+            <a href="https://celloflix.com/cursometododotzauer" target="_blank" rel="noreferrer"><span><small>Aprofundar</small>Método Dotzauer</span><b>↗</b></a>
+          </article>
+
+          <article class="course-card">
+            <div class="course-top"><span class="course-tag">Repertório</span><b>07</b></div>
+            <h3>Curso de Hinos, volume 1</h3>
+            <p>Hinos sacros com estudo consciente em 3 módulos: sonoridade em cordas soltas, escalas, afinação, articulação, dedilhado e dinâmicas aplicadas aos hinos.</p>
+            <div class="course-meta"><span>Repertório sacro</span><span>3 módulos</span></div>
+            <a href="https://celloflix.com/cursodehinos" target="_blank" rel="noreferrer"><span><small>Tocar hinos</small>Curso de Hinos</span><b>↗</b></a>
+          </article>
+
+          <article class="course-card">
+            <div class="course-top"><span class="course-tag">Especializado</span><b>08</b></div>
+            <h3>CH480: Hinos do Hinário 5</h3>
+            <p>Execução dos hinos do Hinário 5 unindo técnica, musicalidade e espiritualidade, da postura e afinação ao fraseado e à interpretação com reverência.</p>
+            <div class="course-meta"><span>Repertório sacro</span><span>Hinário 5</span></div>
+            <a href="https://celloflix.com/cursodehinos480" target="_blank" rel="noreferrer"><span><small>Especializar</small>CH480 Hinos 480</span><b>↗</b></a>
+          </article>
+        </div>
+      </section>
+
+      <section class="choose-section">
+        <div class="section-heading light">
+          <div><p class="eyebrow"><span></span> Como escolher</p><h2 style="color: var(--paper)">Três perguntas,<br />uma decisão.</h2></div>
+          <p style="color: #8e8980">Se estiver entre dois cursos, escolha o mais básico. Base bem feita acelera tudo depois.</p>
+        </div>
+        <div class="choose-grid">
+          <article><b>01</b><h3>Está começando</h3><p>Curso Básico ou CelloClass para ter plano de estudos, postura e som limpo desde a primeira semana.</p></article>
+          <article><b>02</b><h3>Travou na técnica</h3><p>Arco, Mudança de Posição, Vibrato ou Dotzauer, conforme o bloqueio que mais aparece no seu treino do Lab.</p></article>
+          <article><b>03</b><h3>Quer repertório</h3><p>Curso de Hinos ou CH480 para aplicar a técnica em música real, com fraseado e expressão. <a href="https://hotmart.com/pt-br/club/celloflix?from=HomePage" target="_blank" rel="noreferrer">Ver área de membros ↗</a></p></article>
+        </div>
+      </section>
+
+      <section class="mentorship-section">
+        <div><p class="eyebrow dark"><span></span> Mentoria de alta precisão</p><h2>Quando o algoritmo encontra<br />o olhar do mestre.</h2></div>
+        <p>Leve suas próprias gravações, dificuldades e evolução à mentoria. Este site não grava, analisa ou envia áudio ao professor.</p>
+        <a href="https://wa.me/5511914799736?text=Ol%C3%A1%2C%20quero%20conhecer%20a%20mentoria%20Elton%20Ara%C3%BAjo" target="_blank" rel="noreferrer">Solicitar avaliação para mentoria <span>↗</span></a>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-brand"><img src="/elton-logo.webp" alt="Elton Cello Fine" /><span>LAB</span></div>
+      <p>Catálogo complementar ao Practice Lab. Compra e aulas no Celloflix, treino diário no Lab.</p>
+      <p role="status">Conteúdo demonstrativo. A publicação comercial depende de autorização do titular da marca e das imagens.</p>
+      <div><a href="https://www.eltoncello.com/" target="_blank" rel="noreferrer">Loja oficial</a><a href="https://linktr.ee/eltoncello" target="_blank" rel="noreferrer">Canais oficiais</a><a href="/">Voltar ao Lab</a><span>© <b data-year></b></span></div>
+    </footer>
+
+    <script>
+      document.querySelector('[data-menu]').addEventListener('click', () => document.querySelector('[data-nav]').classList.toggle('open'));
+      document.querySelector('[data-year]').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
